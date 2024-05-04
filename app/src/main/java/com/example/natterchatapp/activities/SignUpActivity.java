@@ -149,11 +149,13 @@ public class SignUpActivity extends AppCompatActivity {
                     if (result.getData() != null) {
                         Uri imageUri = result.getData().getData();
                         try {
-                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                            riProfilePic.setImageBitmap(bitmap);
-                            tvAddImage.setVisibility(View.GONE);
-                            encodedImage = encodeImage(bitmap);
+                            if(imageUri!=null) {
+                                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                riProfilePic.setImageBitmap(bitmap);
+                                tvAddImage.setVisibility(View.GONE);
+                                encodedImage = encodeImage(bitmap);
+                            }
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }

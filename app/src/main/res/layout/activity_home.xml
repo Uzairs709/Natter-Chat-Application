@@ -5,6 +5,54 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.HomeActivity">
+    android:animateLayoutChanges="true"
+    android:background="@color/primary"
+    tools:context=".activities.HomeActivity"
+    android:paddingTop="@dimen/_10sdp"
+    >
 
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/rivProfile"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+       android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/background_icon"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:riv_corner_radius="@dimen/_8sdp"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/acivLogout"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:background="@drawable/background_icon"
+        android:padding="@dimen/_6sdp"
+        android:src="@drawable/ic_logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:tint="@color/white"
+        />
+    <TextView
+        android:id="@+id/tvHomeName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+    android:textColor="@color/white"
+    android:textSize="@dimen/_14ssp"
+    android:textStyle="bold"
+    app:layout_constraintBottom_toBottomOf="@id/rivProfile"
+    app:layout_constraintEnd_toStartOf="@id/acivLogout"
+    app:layout_constraintStart_toEndOf="@id/rivProfile"
+    app:layout_constraintTop_toTopOf="@id/rivProfile" />
 </androidx.constraintlayout.widget.ConstraintLayout>
