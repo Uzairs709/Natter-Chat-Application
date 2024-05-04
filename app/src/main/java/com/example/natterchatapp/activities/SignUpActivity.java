@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,10 +24,13 @@ import com.example.natterchatapp.R;
 import com.example.natterchatapp.utilities.KEYS;
 import com.example.natterchatapp.utilities.Preference;
 import com.example.natterchatapp.utilities.ShowToast;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -56,6 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (validate()) {
                     storeToFirebase();
+
                 }
             }
         });
@@ -77,35 +82,64 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void storeToFirebase() {
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        HashMap<String, Object> data = new HashMap<>();
-        data.put(KEYS.KEY_USER_NAME, etName.getText().toString().trim());
-        data.put(KEYS.KEY_USER_EMAIL, etEmail.getText().toString().trim());
-        data.put(KEYS.KEY_USER_PASSWORD, etPass.getText().toString().trim());
-        data.put(KEYS.KEY_USER_IMAGE, encodedImage);
-        database.collection(KEYS.KEY_COLLECTION_USER)
-                .add(data)
-                .addOnFailureListener(new OnFailureListener() {
+        final String email = etEmail.getText().toString().trim();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        boolean[] flag={false};
+
+        db.collection(KEYS.KEY_COLLECTION_USER)  // Replace with your actual collection name
+                .whereEqualTo(KEYS.KEY_USER_EMAIL, email)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        toast.showToast("Registration Failed");
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            boolean userExists = !task.getResult().isEmpty();
+                            if (userExists) {
+                                toast.showToast("Email already exists!");
 
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        toast.showToast("Registration Successful");
-                        sharedPref.puBoolean(KEYS.KEY_USER_IS_SIGNED_IN, true);
-                        sharedPref.putString(KEYS.KEY_USER_ID, documentReference.getId());
-                        sharedPref.putString(KEYS.KEY_USER_NAME, etName.getText().toString().trim());
-                        sharedPref.putString(KEYS.KEY_USER_IMAGE, encodedImage);
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-
+                                flag[0] = false;  // Set validation flag to false
+                            }else {
+                                flag[0]=true;
+                            }
+                        } else {
+                            Log.w("TAG", "Error checking for user", task.getException());
+                        }
                     }
                 });
+
+
+
+        if(flag[0]) {
+
+
+            HashMap<String, Object> data = new HashMap<>();
+            data.put(KEYS.KEY_USER_NAME, etName.getText().toString().trim());
+            data.put(KEYS.KEY_USER_EMAIL, etEmail.getText().toString().trim());
+            data.put(KEYS.KEY_USER_PASSWORD, etPass.getText().toString().trim());
+            data.put(KEYS.KEY_USER_IMAGE, encodedImage);
+            db.collection(KEYS.KEY_COLLECTION_USER)
+                    .add(data)
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            toast.showToast("Registration Failed");
+
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            toast.showToast("Registration Successful");
+                            sharedPref.puBoolean(KEYS.KEY_USER_IS_SIGNED_IN, true);
+                            sharedPref.putString(KEYS.KEY_USER_ID, documentReference.getId());
+                            sharedPref.putString(KEYS.KEY_USER_NAME, etName.getText().toString().trim());
+                            sharedPref.putString(KEYS.KEY_USER_IMAGE, encodedImage);
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
+                    });
+        }
     }
 
     private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(
@@ -139,7 +173,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean validate() {
-        //TODO: Validate if user exists and validate
         boolean flag = true;
         if (etName.getText().toString().trim().isEmpty()) {
             toast.showToast("Name field can not be empty");
@@ -163,7 +196,6 @@ public class SignUpActivity extends AppCompatActivity {
             flag = false;
             toast.showToast("Add Image");
         }
-
 
         return flag;
     }
