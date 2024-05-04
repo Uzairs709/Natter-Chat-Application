@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "137567815203",
+    "project_id": "natterchatapp-7e48f",
+    "storage_bucket": "natterchatapp-7e48f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137567815203:android:ba1d625a196cf2cdd99396",
+        "android_client_info": {
+          "package_name": "com.example.natterchatapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRU8tYzfGglUKlz54mYFS6izHgObTn8Vk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
