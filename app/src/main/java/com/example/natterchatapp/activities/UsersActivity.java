@@ -1,5 +1,6 @@
 package com.example.natterchatapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.natterchatapp.R;
 import com.example.natterchatapp.adapters.UserAdapter;
+import com.example.natterchatapp.listeners.UserListener;
 import com.example.natterchatapp.models.User;
 import com.example.natterchatapp.utilities.KEYS;
 import com.example.natterchatapp.utilities.Preference;
@@ -22,7 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends AppCompatActivity implements UserListener {
 
     AppCompatImageView rivBack;
     TextView tvErrorMessage;
@@ -65,7 +67,7 @@ public class UsersActivity extends AppCompatActivity {
                         users.add(user);
                     }
                     if(!users.isEmpty()){
-                        userAdapter=new UserAdapter(users);
+                        userAdapter=new UserAdapter(users,this);
                         userRecyclerView.setAdapter(userAdapter);
                         userRecyclerView.setVisibility(View.VISIBLE);
                     }else {
@@ -98,6 +100,15 @@ public class UsersActivity extends AppCompatActivity {
         pref = new Preference(UsersActivity.this);
 
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    }
+
+    @Override
+    public void onUserClicked(User user) {
+        Intent intent = new Intent(UsersActivity.this, ChatActivity.class);
+        intent.putExtra(KEYS.KEY_USER, user);
+        startActivity(intent);
+        finish();
 
     }
 }

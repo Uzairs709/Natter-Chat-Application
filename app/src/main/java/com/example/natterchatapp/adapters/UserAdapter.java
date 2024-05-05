@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.natterchatapp.R;
+import com.example.natterchatapp.listeners.UserListener;
 import com.example.natterchatapp.models.User;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private final ArrayList<User> users;
+    private final UserListener listener;
 
     private Bitmap getUserImage(String encodedImage){
         byte[] bytes= Base64.decode(encodedImage,Base64.DEFAULT);
@@ -27,8 +29,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
 
-    public UserAdapter(ArrayList<User> users) {
+    public UserAdapter(ArrayList<User> users, UserListener listener) {
         this.users = users;
+        this.listener = listener;
     }
 
     @NonNull
@@ -50,6 +53,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.email.setText(users.get(position).getEmail());
         holder.name.setText(users.get(position).getName());
         holder.image.setImageBitmap(getUserImage(users.get(position).getImage()));
+        holder.itemView.setOnClickListener(v -> listener.onUserClicked(users.get(position)));
     }
 
     public class UserViewHolder extends RecyclerView.ViewHolder  {
@@ -60,6 +64,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             email=itemView.findViewById(R.id.tvEmailUser);
             name=itemView.findViewById(R.id.tvNameUser);
             image=itemView.findViewById(R.id.rivProfileUser);
+
         }
     }
 }

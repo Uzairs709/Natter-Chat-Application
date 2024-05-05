@@ -10,4 +10,5 @@ public class KEYS {
     public static final String KEY_USER_IMAGE = "image";
     public static final String KEY_USER_IS_SIGNED_IN = "isSignedIn";
     public static final String KEY_FCM_TOKEN = "fcmToken";
+    public static final String KEY_USER = "user";
 }
