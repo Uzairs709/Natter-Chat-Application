@@ -58,6 +58,7 @@ dependencies {
 
     implementation(libs.firebase.messaging.v2200)
     implementation(libs.firebase.firestore.v2302)
+    implementation(libs.roundedimageview)
 
 
 }

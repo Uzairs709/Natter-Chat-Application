@@ -16,7 +16,6 @@
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_16sdp"
-       android:layout_marginLeft="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_12sdp"
         android:background="@drawable/background_icon"
         android:scaleType="centerCrop"
@@ -31,7 +30,6 @@
         android:layout_height="@dimen/_30sdp"
         android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_16sdp"
-        android:layout_marginRight="@dimen/_16sdp"
         android:background="@drawable/background_icon"
         android:padding="@dimen/_6sdp"
         android:src="@drawable/ic_logout"
@@ -48,11 +46,34 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-    android:textColor="@color/white"
-    android:textSize="@dimen/_14ssp"
-    android:textStyle="bold"
-    app:layout_constraintBottom_toBottomOf="@id/rivProfile"
-    app:layout_constraintEnd_toStartOf="@id/acivLogout"
-    app:layout_constraintStart_toEndOf="@id/rivProfile"
-    app:layout_constraintTop_toTopOf="@id/rivProfile" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14ssp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/rivProfile"
+        app:layout_constraintEnd_toStartOf="@id/acivLogout"
+        app:layout_constraintStart_toEndOf="@id/rivProfile"
+        app:layout_constraintTop_toTopOf="@id/rivProfile" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:background="@drawable/background_content_buttom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rivProfile"
+        >
+    </FrameLayout>
+    
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_24sdp"
+        android:layout_marginBottom="@dimen/_24sdp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:tint="@color/white"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

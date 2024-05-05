@@ -8,12 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.ComponentActivity;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.natterchatapp.R;
 import com.example.natterchatapp.utilities.KEYS;
@@ -21,8 +17,6 @@ import com.example.natterchatapp.utilities.Preference;
 import com.example.natterchatapp.utilities.ShowToast;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -47,10 +41,9 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidDetail()){
+                if(isValidDetail()) {
                     logIn();
                 }
-                //fetch data from firebase and start new activity
             }
         });
         tvNewAccount.setOnClickListener(new View.OnClickListener() {

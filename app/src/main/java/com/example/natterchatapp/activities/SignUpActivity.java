@@ -82,12 +82,13 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void storeToFirebase() {
-
         final String email = etEmail.getText().toString().trim();
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-        boolean[] flag={false};
+        final String name = etName.getText().toString().trim();
+        final String password = etPass.getText().toString().trim();
 
-        db.collection(KEYS.KEY_COLLECTION_USER)  // Replace with your actual collection name
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection(KEYS.KEY_COLLECTION_USER)
                 .whereEqualTo(KEYS.KEY_USER_EMAIL, email)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -96,51 +97,50 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             boolean userExists = !task.getResult().isEmpty();
                             if (userExists) {
+                                // User with this email already exists
                                 toast.showToast("Email already exists!");
+                            } else {
+                                // User with this email does not exist, proceed with registration
+                                HashMap<String, Object> data = new HashMap<>();
+                                data.put(KEYS.KEY_USER_NAME, name);
+                                data.put(KEYS.KEY_USER_EMAIL, email);
+                                data.put(KEYS.KEY_USER_PASSWORD, password);
+                                data.put(KEYS.KEY_USER_IMAGE, encodedImage); // Assuming 'encodedImage' is already set
 
-                                flag[0] = false;  // Set validation flag to false
-                            }else {
-                                flag[0]=true;
+                                db.collection(KEYS.KEY_COLLECTION_USER)
+                                        .add(data)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                // Registration successful
+                                                toast.showToast("Registration Successful");
+                                                sharedPref.puBoolean(KEYS.KEY_USER_IS_SIGNED_IN, true);
+                                                sharedPref.putString(KEYS.KEY_USER_ID, documentReference.getId());
+                                                sharedPref.putString(KEYS.KEY_USER_NAME, name);
+                                                sharedPref.putString(KEYS.KEY_USER_IMAGE, encodedImage);
+
+                                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Registration failed
+                                                toast.showToast("Registration Failed");
+                                            }
+                                        });
                             }
                         } else {
+                            // Error occurred while checking for user
                             Log.w("TAG", "Error checking for user", task.getException());
+                            toast.showToast("Error checking for user");
                         }
                     }
                 });
-
-
-
-        if(flag[0]) {
-
-
-            HashMap<String, Object> data = new HashMap<>();
-            data.put(KEYS.KEY_USER_NAME, etName.getText().toString().trim());
-            data.put(KEYS.KEY_USER_EMAIL, etEmail.getText().toString().trim());
-            data.put(KEYS.KEY_USER_PASSWORD, etPass.getText().toString().trim());
-            data.put(KEYS.KEY_USER_IMAGE, encodedImage);
-            db.collection(KEYS.KEY_COLLECTION_USER)
-                    .add(data)
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            toast.showToast("Registration Failed");
-
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            toast.showToast("Registration Successful");
-                            sharedPref.puBoolean(KEYS.KEY_USER_IS_SIGNED_IN, true);
-                            sharedPref.putString(KEYS.KEY_USER_ID, documentReference.getId());
-                            sharedPref.putString(KEYS.KEY_USER_NAME, etName.getText().toString().trim());
-                            sharedPref.putString(KEYS.KEY_USER_IMAGE, encodedImage);
-                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        }
-                    });
-        }
     }
+
 
     private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

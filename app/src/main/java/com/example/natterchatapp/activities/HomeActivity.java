@@ -15,6 +15,7 @@ import com.example.natterchatapp.R;
 import com.example.natterchatapp.utilities.KEYS;
 import com.example.natterchatapp.utilities.Preference;
 import com.example.natterchatapp.utilities.ShowToast;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
     private RoundedImageView rivProfile;
     private AppCompatImageView acivLogout;
     private TextView tvHomeName;
+    private FloatingActionButton fabAdd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,8 @@ public class HomeActivity extends AppCompatActivity {
         getToken();
 
         acivLogout.setOnClickListener(v->logout());
+        fabAdd.setOnClickListener(v->
+                startActivity(new Intent(getApplicationContext(),UsersActivity.class)));
 
     }
 
@@ -83,8 +87,6 @@ public class HomeActivity extends AppCompatActivity {
                         pref.getString(KEYS.KEY_USER_ID)
                 );
         dr.update(KEYS.KEY_FCM_TOKEN,token)
-                .addOnSuccessListener(unused ->{toast
-                        .showToast("Token Yes");} )
                 .addOnFailureListener(e->{toast.showToast("Token no");});
     }
 
@@ -95,7 +97,7 @@ public class HomeActivity extends AppCompatActivity {
         rivProfile=findViewById(R.id.rivProfile);
         acivLogout=findViewById(R.id.acivLogout);
         tvHomeName=findViewById(R.id.tvHomeName);
-
+        fabAdd=findViewById(R.id.fabAdd);
 
     }
 }
