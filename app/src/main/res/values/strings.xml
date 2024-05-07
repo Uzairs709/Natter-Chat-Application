@@ -15,4 +15,5 @@
     <string name="back_to_login">Back to Login</string>
     <string name="sign_up">Sign Up</string>
     <string name="select_user">Select User</string>
+    <string name="type_a_message">Type a message</string>
 </resources>

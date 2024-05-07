@@ -23,9 +23,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private final ArrayList<User> users;
     private final UserListener listener;
 
-    private Bitmap getUserImage(String encodedImage){
-        byte[] bytes= Base64.decode(encodedImage,Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+    private Bitmap getUserImage(String encodedImage) {
+        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
 
@@ -37,9 +37,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater
+        View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.item_container_user,parent,false);
+                .inflate(R.layout.item_container_user, parent, false);
         return new UserViewHolder(view);
     }
 
@@ -53,17 +53,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.email.setText(users.get(position).getEmail());
         holder.name.setText(users.get(position).getName());
         holder.image.setImageBitmap(getUserImage(users.get(position).getImage()));
-        holder.itemView.setOnClickListener(v -> listener.onUserClicked(users.get(position)));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onUserClicked(users.get(position));
+            }
+        });
     }
 
-    public class UserViewHolder extends RecyclerView.ViewHolder  {
-        TextView email,name;
+    public class UserViewHolder extends RecyclerView.ViewHolder {
+        TextView email, name;
         RoundedImageView image;
+
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            email=itemView.findViewById(R.id.tvEmailUser);
-            name=itemView.findViewById(R.id.tvNameUser);
-            image=itemView.findViewById(R.id.rivProfileUser);
+            email = itemView.findViewById(R.id.tvEmailUser);
+            name = itemView.findViewById(R.id.tvNameUser);
+            image = itemView.findViewById(R.id.rivProfileUser);
 
         }
     }

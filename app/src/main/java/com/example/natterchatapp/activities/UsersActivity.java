@@ -49,33 +49,34 @@ public class UsersActivity extends AppCompatActivity implements UserListener {
 
     private void getUsers() {
         loading(true);
-        FirebaseFirestore db= FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(KEYS.KEY_COLLECTION_USER)
-        .get().addOnCompleteListener(task -> {
-            loading(false);
-                String currUser=pref.getString(KEYS.KEY_USER_ID);
-                if(task.isSuccessful()&&task.getResult()!=null) {
-                    for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
-                        if(currUser.equals(queryDocumentSnapshot.getId())){
-                            continue;
+                .get().addOnCompleteListener(task -> {
+                    loading(false);
+                    String currUser = pref.getString(KEYS.KEY_USER_ID);
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            if (currUser.equals(queryDocumentSnapshot.getId())) {
+                                continue;
+                            }
+                            User user = new User();
+                            user.setName(queryDocumentSnapshot.getString(KEYS.KEY_USER_NAME));
+                            user.setEmail(queryDocumentSnapshot.getString(KEYS.KEY_USER_EMAIL));
+                            user.setImage(queryDocumentSnapshot.getString(KEYS.KEY_USER_IMAGE));
+                            user.setToken(queryDocumentSnapshot.getString(KEYS.KEY_FCM_TOKEN));
+                            user.setId(queryDocumentSnapshot.getId());
+                            users.add(user);
                         }
-                        User user=new User();
-                        user.setName(queryDocumentSnapshot.getString(KEYS.KEY_USER_NAME));
-                        user.setEmail(queryDocumentSnapshot.getString(KEYS.KEY_USER_EMAIL));
-                        user.setImage(queryDocumentSnapshot.getString(KEYS.KEY_USER_IMAGE));
-                        user.setToken(queryDocumentSnapshot.getString(KEYS.KEY_FCM_TOKEN));
-                        users.add(user);
+                        if (!users.isEmpty()) {
+                            userAdapter = new UserAdapter(users, this);
+                            userRecyclerView.setAdapter(userAdapter);
+                            userRecyclerView.setVisibility(View.VISIBLE);
+                        } else {
+                            showErrorMessage();
+                        }
                     }
-                    if(!users.isEmpty()){
-                        userAdapter=new UserAdapter(users,this);
-                        userRecyclerView.setAdapter(userAdapter);
-                        userRecyclerView.setVisibility(View.VISIBLE);
-                    }else {
-                        showErrorMessage();
-                    }
-                }
 
-        });
+                });
 
 
     }
@@ -84,15 +85,16 @@ public class UsersActivity extends AppCompatActivity implements UserListener {
         tvErrorMessage.setText(String.format("%s", "No User available"));
         tvErrorMessage.setVisibility(View.VISIBLE);
     }
-    private void loading(boolean isLoading){
-        if(isLoading){
+
+    private void loading(boolean isLoading) {
+        if (isLoading) {
             progressBar.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             progressBar.setVisibility(View.GONE);
         }
     }
 
-    public void init(){
+    public void init() {
         rivBack = findViewById(R.id.backImage);
         tvErrorMessage = findViewById(R.id.textErrorMessage);
         progressBar = findViewById(R.id.progressBar);

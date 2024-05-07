@@ -9,19 +9,20 @@
     android:background="@color/primary"
     android:paddingTop="@dimen/_10sdp"
     tools:context=".activities.UsersActivity">
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/backImage"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_12sdp"
-        android:src="@drawable/ic_back"
         android:background="@drawable/background_icon"
         android:padding="@dimen/_6sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/ic_back"
         android:tint="@color/white"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,8 +33,8 @@
         app:layout_constraintBottom_toBottomOf="@id/backImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/backImage"
-        />
+        app:layout_constraintTop_toTopOf="@id/backImage" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -51,13 +52,14 @@
             android:overScrollMode="never"
             android:padding="@dimen/_20sdp"
             android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
+
         <TextView
             android:id="@+id/textErrorMessage"
             android:layout_width="match_parent"
@@ -68,7 +70,6 @@
             android:gravity="center"
             android:textColor="@color/error"
             android:textSize="@dimen/_12ssp"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,20 +5,20 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".activities.MainActivity">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="425dp"
         android:contentDescription="@string/natter_chat_application_logo"
-        android:src="@drawable/main_ic"
-        />
+        android:src="@drawable/main_ic" />
+
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
-        />
+        android:layout_margin="20dp" />
 
 </LinearLayout>

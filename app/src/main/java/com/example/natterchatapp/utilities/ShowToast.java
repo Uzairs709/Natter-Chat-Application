@@ -10,7 +10,7 @@ public class ShowToast {
         this.context = context;
     }
 
-    public void showToast(String message){
+    public void showToast(String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }

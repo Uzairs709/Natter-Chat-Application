@@ -3,26 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/_24sdp"
+    android:background="@color/white"
     android:clipToPadding="false"
     android:overScrollMode="never"
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
-    tools:context=".activities.SignUpActivity"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:layout_marginBottom="@dimen/_24sdp">
+    tools:context=".activities.SignUpActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/_120sdp"
-            android:src="@drawable/main_ic"
-            android:contentDescription="@string/natter_app_icon" />
+            android:contentDescription="@string/natter_app_icon"
+            android:src="@drawable/main_ic" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,31 +32,32 @@
             android:text="@string/create_new_account"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_18sdp"
-            android:textStyle="bold"
-            />
-       <FrameLayout
-           android:id="@+id/layoutImage"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_marginTop="@dimen/_20sdp">
-           <com.makeramen.roundedimageview.RoundedImageView
-              android:id="@+id/riProfilePic"
-               android:layout_width="@dimen/_80sdp"
-               android:layout_height="@dimen/_80sdp"
-               android:background="@drawable/background_image"
-               android:scaleType="centerCrop"
-               app:riv_oval="true"
-               />
-           <TextView
-               android:id="@+id/tvAddImage"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-              android:layout_gravity="center"
-               android:text="@string/your_image_here"
-               android:textColor="@color/secondary_text"
-               android:textSize="@dimen/_10sdp"
-               />
-       </FrameLayout>
+            android:textStyle="bold" />
+
+        <FrameLayout
+            android:id="@+id/layoutImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/riProfilePic"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:background="@drawable/background_image"
+                android:scaleType="centerCrop"
+                app:riv_oval="true" />
+
+            <TextView
+                android:id="@+id/tvAddImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/your_image_here"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/_10sdp" />
+        </FrameLayout>
+
         <EditText
             android:id="@+id/etSName"
             android:layout_width="match_parent"
@@ -69,6 +72,7 @@
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_13sdp"
             tools:ignore="RtlSymmetry" />
+
         <EditText
             android:id="@+id/etSEmail"
             android:layout_width="match_parent"
@@ -98,6 +102,7 @@
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_13sdp"
             tools:ignore="RtlSymmetry" />
+
         <EditText
             android:id="@+id/etSConfirmPass"
             android:layout_width="match_parent"
@@ -121,8 +126,7 @@
             android:text="@string/sign_up"
             android:textColor="@color/white"
             android:textSize="@dimen/_13sdp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvBackToLogin"
@@ -132,8 +136,7 @@
             android:text="@string/back_to_login"
             android:textColor="@color/primary"
             android:textSize="@dimen/_13sdp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
     </LinearLayout>
 

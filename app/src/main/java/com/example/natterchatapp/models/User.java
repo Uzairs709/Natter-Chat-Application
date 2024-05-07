@@ -3,10 +3,20 @@ package com.example.natterchatapp.models;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    private String name,email,image,token;
+    private String name;
+    private String email;
+    private String image;
+    private String token;
+    private String id;
 
     public User() {
+        this.id = "";
+        this.name = "";
+        this.email = "";
+        this.image = "";
+        this.token = "";
     }
+
     public User(String name, String email, String image, String token) {
         this.name = name;
         this.email = email;
@@ -44,5 +54,13 @@ public class User implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

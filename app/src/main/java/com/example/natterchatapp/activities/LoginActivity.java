@@ -34,14 +34,14 @@ public class LoginActivity extends AppCompatActivity {
 
         init();
 
-        if(preference.getBoolean(KEYS.KEY_USER_IS_SIGNED_IN)){
+        if (preference.getBoolean(KEYS.KEY_USER_IS_SIGNED_IN)) {
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
             finish();
         }
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isValidDetail()) {
+                if (isValidDetail()) {
                     logIn();
                 }
             }
@@ -56,24 +56,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void logIn() {
-        FirebaseFirestore database=FirebaseFirestore.getInstance();
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection(KEYS.KEY_COLLECTION_USER)
-                .whereEqualTo(KEYS.KEY_USER_EMAIL,etEmail.getText().toString().trim())
-                .whereEqualTo(KEYS.KEY_USER_PASSWORD,etPass.getText().toString().trim())
+                .whereEqualTo(KEYS.KEY_USER_EMAIL, etEmail.getText().toString().trim())
+                .whereEqualTo(KEYS.KEY_USER_PASSWORD, etPass.getText().toString().trim())
                 .get().addOnCompleteListener(task -> {
-                    if(task.isSuccessful()&& task.getResult()!=null
-                    && !task.getResult().getDocuments().isEmpty()){
-                        DocumentSnapshot doc=task.getResult().getDocuments().get(0);
-                        preference.puBoolean(KEYS.KEY_USER_IS_SIGNED_IN,true);
-                        preference.putString(KEYS.KEY_USER_NAME,doc.getString(KEYS.KEY_USER_NAME));
-                        preference.putString(KEYS.KEY_USER_ID,doc.getId());
-                        preference.putString(KEYS.KEY_USER_IMAGE,doc.getString(KEYS.KEY_USER_IMAGE));
+                    if (task.isSuccessful() && task.getResult() != null
+                            && !task.getResult().getDocuments().isEmpty()) {
+                        DocumentSnapshot doc = task.getResult().getDocuments().get(0);
+                        preference.puBoolean(KEYS.KEY_USER_IS_SIGNED_IN, true);
+                        preference.putString(KEYS.KEY_USER_NAME, doc.getString(KEYS.KEY_USER_NAME));
+                        preference.putString(KEYS.KEY_USER_ID, doc.getId());
+                        preference.putString(KEYS.KEY_USER_IMAGE, doc.getString(KEYS.KEY_USER_IMAGE));
 
-                        Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
+                        toast.showToast("Welcome " + preference.getString(KEYS.KEY_USER_NAME));
+                        finish();
 
-                    }else {
+
+                    } else {
                         toast.showToast("Invalid Email or Password");
                     }
                 });
@@ -81,15 +84,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean isValidDetail() {
 
-        boolean flag=true;
-       if (etEmail.getText().toString().trim().isEmpty()) {
-            flag=false;
+        boolean flag = true;
+        if (etEmail.getText().toString().trim().isEmpty()) {
+            flag = false;
             toast.showToast("Email Field cannot be Empty");
         } else if (etPass.getText().toString().isEmpty()) {
-           flag=false;
-           toast.showToast("Password Field cannot be Empty");
-       } else if(!Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString().trim()).matches()){
-            flag=false;
+            flag = false;
+            toast.showToast("Password Field cannot be Empty");
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString().trim()).matches()) {
+            flag = false;
             toast.showToast("Invalid Email format");
         }
         return flag;
@@ -101,8 +104,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvNewAccount = findViewById(R.id.tvNewAccount);
 
-        toast=new ShowToast(LoginActivity.this);
+        toast = new ShowToast(LoginActivity.this);
 
-        preference=new Preference(LoginActivity.this);
+        preference = new Preference(LoginActivity.this);
     }
 }

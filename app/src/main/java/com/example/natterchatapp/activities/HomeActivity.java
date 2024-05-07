@@ -33,6 +33,7 @@ public class HomeActivity extends AppCompatActivity {
     private AppCompatImageView acivLogout;
     private TextView tvHomeName;
     private FloatingActionButton fabAdd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,24 +41,23 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         init();
         loadUser();
-        toast.showToast("Welcome "+pref.getString(KEYS.KEY_USER_NAME));
         getToken();
 
-        acivLogout.setOnClickListener(v->logout());
-        fabAdd.setOnClickListener(v->
-                startActivity(new Intent(getApplicationContext(),UsersActivity.class)));
+        acivLogout.setOnClickListener(v -> logout());
+        fabAdd.setOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(), UsersActivity.class)));
 
     }
 
-    private void logout(){
+    private void logout() {
 
         toast.showToast("Logging Out....");
-        FirebaseFirestore db=FirebaseFirestore.getInstance();
-        DocumentReference dr=db.collection(KEYS.KEY_COLLECTION_USER)
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference dr = db.collection(KEYS.KEY_COLLECTION_USER)
                 .document(
                         pref.getString(KEYS.KEY_USER_ID)
                 );
-        HashMap<String, Object> updates= new HashMap<>();
+        HashMap<String, Object> updates = new HashMap<>();
         updates.put(KEYS.KEY_FCM_TOKEN, FieldValue.delete());
         dr.update(updates)
                 .addOnSuccessListener(unused -> {
@@ -65,39 +65,43 @@ public class HomeActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     finish();
                 })
-                .addOnFailureListener(e-> toast.showToast("Unable to sign out"));
+                .addOnFailureListener(e -> toast.showToast("Unable to sign out"));
     }
 
-    private void loadUser(){
+    private void loadUser() {
         tvHomeName.setText(pref.getString(KEYS.KEY_USER_NAME));
-        byte[] bytes= Base64.decode(pref.getString(KEYS.KEY_USER_IMAGE),Base64.DEFAULT);
-        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        byte[] bytes = Base64.decode(pref.getString(KEYS.KEY_USER_IMAGE), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         rivProfile.setImageBitmap(bitmap);
 
     }
 
-    private void getToken(){
+    private void getToken() {
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(this::updateToken);
     }
 
-    private void updateToken(String token){
-        FirebaseFirestore db=FirebaseFirestore.getInstance();
-        DocumentReference dr=db.collection(KEYS.KEY_COLLECTION_USER)
+    private void updateToken(String token) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference dr = db.collection(KEYS.KEY_COLLECTION_USER)
                 .document(
                         pref.getString(KEYS.KEY_USER_ID)
                 );
-        dr.update(KEYS.KEY_FCM_TOKEN,token)
-                .addOnFailureListener(e->{toast.showToast("Token no");});
+        dr.update(KEYS.KEY_FCM_TOKEN, token)
+                .addOnFailureListener(e -> {
+                    toast.showToast("Token no");
+                });
     }
 
-    private void init(){
-        pref=new Preference(HomeActivity.this);
-        toast=new ShowToast(HomeActivity.this);
+    private void init() {
+        pref = new Preference(HomeActivity.this);
+        toast = new ShowToast(HomeActivity.this);
 
-        rivProfile=findViewById(R.id.rivProfile);
-        acivLogout=findViewById(R.id.acivLogout);
-        tvHomeName=findViewById(R.id.tvHomeName);
-        fabAdd=findViewById(R.id.fabAdd);
+        rivProfile = findViewById(R.id.rivProfile);
+        acivLogout = findViewById(R.id.acivLogout);
+        tvHomeName = findViewById(R.id.tvHomeName);
+        fabAdd = findViewById(R.id.fabAdd);
 
     }
+
+
 }

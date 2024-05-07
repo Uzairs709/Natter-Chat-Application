@@ -10,21 +10,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.natterchatapp.R;
 
 public class MainActivity extends AppCompatActivity {
-   Handler handler;
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        handler=new Handler();
+        handler = new Handler();
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
             }
-        },3000);
+        }, 3000);
     }
 }

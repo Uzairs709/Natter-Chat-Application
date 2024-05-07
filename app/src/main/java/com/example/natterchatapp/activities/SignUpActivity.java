@@ -122,6 +122,8 @@ public class SignUpActivity extends AppCompatActivity {
                                                 Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                 startActivity(intent);
+                                                toast.showToast("Welcome " + sharedPref.getString(KEYS.KEY_USER_NAME));
+                                                finish();
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -149,7 +151,7 @@ public class SignUpActivity extends AppCompatActivity {
                     if (result.getData() != null) {
                         Uri imageUri = result.getData().getData();
                         try {
-                            if(imageUri!=null) {
+                            if (imageUri != null) {
                                 InputStream inputStream = getContentResolver().openInputStream(imageUri);
                                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                                 riProfilePic.setImageBitmap(bitmap);
