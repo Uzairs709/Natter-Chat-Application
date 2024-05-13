@@ -27,7 +27,7 @@
         android:paddingEnd="@dimen/_12sdp"
         android:paddingBottom="@dimen/_8sdp"
         android:textColor="@color/white"
-        android:textSize="@dimen/_13sdp"
+        android:textSize="@dimen/_13ssp"
         app:layout_constraintStart_toEndOf="@+id/rivReceivedMessageProfile"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_max="wrap"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4sdp"
         android:textColor="@color/secondary_text"
-        android:textSize="@dimen/_8sdp"
+        android:textSize="@dimen/_8ssp"
         app:layout_constraintStart_toStartOf="@id/tvReceivedMessage"
         app:layout_constraintTop_toBottomOf="@+id/tvReceivedMessage" />
 

@@ -5,18 +5,11 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.natterchatapp.R;
 import com.example.natterchatapp.adapters.ChatAdapter;
+import com.example.natterchatapp.databinding.ActivityChatBinding;
 import com.example.natterchatapp.models.ChatMessage;
 import com.example.natterchatapp.models.User;
 import com.example.natterchatapp.utilities.KEYS;
@@ -35,125 +28,102 @@ import java.util.Locale;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private View viewBackground;
-    private AppCompatImageView acivBack, acivInfo;
-    private TextView tvChatName;
-    private RecyclerView chatRecyclerView;
-    private ProgressBar chatProgressBar;
-    private FrameLayout layoutSend;
-    private EditText inputMessage;
+    private ActivityChatBinding binding;
     private User receivedUser;
-    private ArrayList<ChatMessage> messages;
-    private ChatAdapter adapter;
-    private FirebaseFirestore db;
+    private ArrayList<ChatMessage> chatMessages;
+    private ChatAdapter chatAdapter;
     private Preference sharedPref;
-    private String conversationId = "";
-    private boolean isReceiverAvailable;
-
+    private FirebaseFirestore database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_chat);
-        receivedUser = (User) getIntent().getSerializableExtra(KEYS.KEY_USER);
-
+        binding = ActivityChatBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        loadUser();
+        setListener();
         init();
-        listners();
-        if (receivedUser != null) {
-            tvChatName.setText(receivedUser.getName());
-        }
-        listenMessages();
+        listenMessage();
     }
 
-    private void listners() {
-        acivBack.setOnClickListener(v -> finish());
-        layoutSend.setOnClickListener(v -> sendMessage());
+    private void init() {
+        sharedPref = new Preference(getApplicationContext());
+        chatMessages = new ArrayList<>();
+        chatAdapter = new ChatAdapter(chatMessages,
+                sharedPref.getString(KEYS.KEY_USER_ID),
+                getBitmapFromString(receivedUser.getImage())
+        );
+        binding.chatRecyclerView.setAdapter(chatAdapter);
+        database = FirebaseFirestore.getInstance();
+    }
+
+    private void sendMessage() {
+        HashMap<String, Object> message = new HashMap<>();
+        message.put(KEYS.KEY_SENDER_ID, sharedPref.getString(KEYS.KEY_USER_ID));
+        message.put(KEYS.KEY_RECEIVER_ID, receivedUser.getId());
+        message.put(KEYS.KEY_MESSAGE, binding.inputMessage.getText().toString());
+        message.put(KEYS.KEY_TIMESTAMP, new Date());
+        database.collection(KEYS.KEY_COLLECTION_CHAT).add(message);
+        binding.inputMessage.setText(null);
 
     }
 
-    private void listenMessages() {
-        db.collection(KEYS.KEY_COLLECTION_CHAT)
-                .whereEqualTo(KEYS.KEY_SENDER_ID, sharedPref.getString(KEYS.KEY_USER_ID))
-                .whereEqualTo(KEYS.KEY_RECEIVER_ID, receivedUser.getId())
+    private void listenMessage(){
+        database.collection(KEYS.KEY_COLLECTION_CHAT)
+                .whereEqualTo(KEYS.KEY_SENDER_ID,sharedPref.getString(KEYS.KEY_USER_ID))
+                .whereEqualTo(KEYS.KEY_RECEIVER_ID,receivedUser.getId())
                 .addSnapshotListener(eventListener);
-        db.collection(KEYS.KEY_COLLECTION_CHAT)
-                .whereEqualTo(KEYS.KEY_SENDER_ID, receivedUser.getId())
-                .whereEqualTo(KEYS.KEY_RECEIVER_ID, sharedPref.getString(KEYS.KEY_USER_ID))
+        database.collection(KEYS.KEY_COLLECTION_CHAT)
+                .whereEqualTo(KEYS.KEY_SENDER_ID,receivedUser.getId())
+                .whereEqualTo(KEYS.KEY_RECEIVER_ID,sharedPref.getString(KEYS.KEY_USER_ID))
                 .addSnapshotListener(eventListener);
-
     }
 
-    private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
+    private final EventListener<QuerySnapshot> eventListener = ((value, error) -> {
         if (error != null) {
             return;
         }
         if (value != null) {
-            int count = messages.size();
-            for (DocumentChange doc : value.getDocumentChanges()) {
-                if (doc.getType() == DocumentChange.Type.ADDED) {
+            int count = chatMessages.size();
+            for (DocumentChange documentChange : value.getDocumentChanges()) {
+                if (documentChange.getType() == DocumentChange.Type.ADDED) {
                     ChatMessage chatMessage = new ChatMessage();
-                    chatMessage.setSenderId(doc.getDocument().getString(KEYS.KEY_SENDER_ID));
-                    chatMessage.setReceiverId(doc.getDocument().getString(KEYS.KEY_RECEIVER_ID));
-                    chatMessage.setMessage(doc.getDocument().getString(KEYS.KEY_MESSAGE));
-                    chatMessage.setDateTime(getReadableDateTime(doc.getDocument().getDate(KEYS.KEY_TIMESTAMP)));
-                    chatMessage.setDateObj(doc.getDocument().getDate(KEYS.KEY_TIMESTAMP));
-                    messages.add(chatMessage);
+                    chatMessage.setSenderId(documentChange.getDocument().getString(KEYS.KEY_SENDER_ID));
+                    chatMessage.setReceiverId(documentChange.getDocument().getString(KEYS.KEY_RECEIVER_ID));
+                    chatMessage.setMessage(documentChange.getDocument().getString(KEYS.KEY_MESSAGE));
+                    chatMessage.setDateTime(getReadableDateTime(documentChange.getDocument().getDate(KEYS.KEY_TIMESTAMP)));
+                    chatMessage.setDateObj(documentChange.getDocument().getDate(KEYS.KEY_TIMESTAMP));
+                    chatMessages.add(chatMessage);
                 }
+            }Collections.sort(chatMessages,(obj1,obj2)->obj1.getDateObj().compareTo(obj2.getDateObj()));
+            if(count==0){
+                chatAdapter.notifyDataSetChanged();
+            }else{
+                chatAdapter.notifyItemRangeInserted(chatMessages.size(),chatMessages.size());
+                binding.chatRecyclerView.smoothScrollToPosition(chatMessages.size()-1);
             }
-            Collections.sort(messages, (obj1, obj2) -> obj1.getDateObj().compareTo(obj2.getDateObj()));
-            if (count == 0) {
-                adapter.notifyDataSetChanged();
-            } else {
-                adapter.notifyItemRangeInserted(messages.size(), messages.size());
-                chatRecyclerView.smoothScrollToPosition(messages.size() - 1);
-            }
-            chatRecyclerView.setVisibility(View.VISIBLE);
+            binding.chatRecyclerView.setVisibility(View.VISIBLE);
         }
-        chatProgressBar.setVisibility(View.GONE);
-    };
+        binding.chatProgressBar.setVisibility(View.GONE);
+    });
 
-
-    private String getReadableDateTime(Date date) {
-        return new SimpleDateFormat(" MMMM dd, yyyy -hh:mm a",
-                Locale.getDefault()).format(date);
-    }
-
-    private Bitmap getBitmapFromEncodedString(String encodedImage) {
-        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
+    private Bitmap getBitmapFromString(String encoded) {
+        byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
-    public void init() {
-        viewBackground = findViewById(R.id.viewChatBackground);
-        acivBack = findViewById(R.id.acivChatBack);
-        acivInfo = findViewById(R.id.acivChatInfo);
-        tvChatName = findViewById(R.id.tvChatName);
-        chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        chatProgressBar = findViewById(R.id.chatProgressBar);
-        layoutSend = findViewById(R.id.layoutSend);
-        inputMessage = findViewById(R.id.inputMessage);
+    private void setListener() {
 
-        sharedPref = new Preference(ChatActivity.this);
-        messages = new ArrayList<>();
-        adapter = new ChatAdapter(messages,
-                sharedPref.getString(KEYS.KEY_USER_ID),
-                getBitmapFromEncodedString(receivedUser.getImage()));
-
-        chatRecyclerView.setAdapter(adapter);
-        db = FirebaseFirestore.getInstance();
+        binding.acivChatBack.setOnClickListener(v -> finish());
+        binding.layoutSend.setOnClickListener(v -> sendMessage());
     }
 
+    private void loadUser() {
+        receivedUser = (User) getIntent().getSerializableExtra(KEYS.KEY_USER);
+        binding.tvChatName.setText(receivedUser.getName());
+    }
 
-    private void sendMessage() {
-        if (!inputMessage.getText().toString().isEmpty()) {
-            HashMap<String, Object> message = new HashMap<>();
-            message.put(KEYS.KEY_USER_ID, sharedPref.getString(KEYS.KEY_USER_ID));
-            message.put(KEYS.KEY_RECEIVER_ID, receivedUser.getId());
-            message.put(KEYS.KEY_MESSAGE, inputMessage.getText().toString().trim());
-            message.put(KEYS.KEY_TIMESTAMP, new Date());
-            db.collection(KEYS.KEY_COLLECTION_CHAT).add(message);
-            inputMessage.setText("");
-        }
+    private String getReadableDateTime(Date date) {
+        return new SimpleDateFormat("MMMM dd,yyyy-hh:mm a", Locale.getDefault()).format(date);
     }
 }

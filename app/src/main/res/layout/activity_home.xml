@@ -58,7 +58,9 @@
         android:layout_marginTop="@dimen/_16sdp"
         android:background="@drawable/background_content_buttom"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rivProfile"></FrameLayout>
+        app:layout_constraintTop_toBottomOf="@id/rivProfile">
+
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"

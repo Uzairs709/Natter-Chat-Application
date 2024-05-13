@@ -1,5 +1,6 @@
 package com.example.natterchatapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -49,7 +50,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull UserViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.email.setText(users.get(position).getEmail());
         holder.name.setText(users.get(position).getName());
         holder.image.setImageBitmap(getUserImage(users.get(position).getImage()));

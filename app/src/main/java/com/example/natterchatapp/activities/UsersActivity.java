@@ -65,11 +65,13 @@ public class UsersActivity extends AppCompatActivity implements UserListener {
                             user.setImage(queryDocumentSnapshot.getString(KEYS.KEY_USER_IMAGE));
                             user.setToken(queryDocumentSnapshot.getString(KEYS.KEY_FCM_TOKEN));
                             user.setId(queryDocumentSnapshot.getId());
+
                             users.add(user);
                         }
                         if (!users.isEmpty()) {
                             userAdapter = new UserAdapter(users, this);
                             userRecyclerView.setAdapter(userAdapter);
+                            userRecyclerView.setLayoutManager(new LinearLayoutManager(UsersActivity.this));
                             userRecyclerView.setVisibility(View.VISIBLE);
                         } else {
                             showErrorMessage();

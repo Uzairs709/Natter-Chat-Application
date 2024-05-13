@@ -44,8 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         getToken();
 
         acivLogout.setOnClickListener(v -> logout());
-        fabAdd.setOnClickListener(v ->
-                startActivity(new Intent(getApplicationContext(), UsersActivity.class)));
+        fabAdd.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), UsersActivity.class)));
 
     }
 
