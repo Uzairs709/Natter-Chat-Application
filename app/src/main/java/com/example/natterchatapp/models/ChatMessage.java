@@ -3,7 +3,38 @@ package com.example.natterchatapp.models;
 import java.util.Date;
 
 public class ChatMessage {
-    private String senderId, receiverId, message, dateTime;
+    private String senderId;
+    private String receiverId;
+    private String message;
+    private String dateTime;
+    private String conversionId;
+    private String conversionName;
+
+    public String getConversionId() {
+        return conversionId;
+    }
+
+    public void setConversionId(String conversionId) {
+        this.conversionId = conversionId;
+    }
+
+    public String getConversionName() {
+        return conversionName;
+    }
+
+    public void setConversionName(String conversionName) {
+        this.conversionName = conversionName;
+    }
+
+    public String getConversionImage() {
+        return conversionImage;
+    }
+
+    public void setConversionImage(String conversionImage) {
+        this.conversionImage = conversionImage;
+    }
+
+    private String conversionImage;
     private Date dateObj;
 
     public Date getDateObj() {

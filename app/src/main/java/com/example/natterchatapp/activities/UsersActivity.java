@@ -37,7 +37,6 @@ public class UsersActivity extends AppCompatActivity implements UserListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_users);
 
         init();

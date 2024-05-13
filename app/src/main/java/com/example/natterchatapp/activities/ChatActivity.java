@@ -14,7 +14,10 @@ import com.example.natterchatapp.models.ChatMessage;
 import com.example.natterchatapp.models.User;
 import com.example.natterchatapp.utilities.KEYS;
 import com.example.natterchatapp.utilities.Preference;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,6 +37,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
     private Preference sharedPref;
     private FirebaseFirestore database;
+    private String conversationId=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,21 @@ public class ChatActivity extends AppCompatActivity {
         message.put(KEYS.KEY_MESSAGE, binding.inputMessage.getText().toString());
         message.put(KEYS.KEY_TIMESTAMP, new Date());
         database.collection(KEYS.KEY_COLLECTION_CHAT).add(message);
+        if(conversationId!=null){
+            updateConversion(binding.inputMessage.getText().toString());
+        }else{
+            HashMap<String,Object> conversion=new HashMap<>();
+            conversion.put(KEYS.KEY_SENDER_ID,sharedPref.getString(KEYS.KEY_USER_ID));
+            conversion.put(KEYS.KEY_SENDER_NAME,sharedPref.getString(KEYS.KEY_USER_NAME));
+            conversion.put(KEYS.KEY_SENDER_IMAGE,sharedPref.getString(KEYS.KEY_USER_IMAGE));
+            conversion.put(KEYS.KEY_RECEIVER_ID,receivedUser.getId());
+            conversion.put(KEYS.KEY_RECEIVER_NAME,receivedUser.getName());
+            conversion.put(KEYS.KEY_RECEIVER_IMAGE,receivedUser.getImage());
+            conversion.put(KEYS.KEY_LAST_MESSAGE,binding.inputMessage.getText().toString());
+            conversion.put(KEYS.KEY_TIMESTAMP,new Date());
+            addConversion(conversion);
+        }
+
         binding.inputMessage.setText(null);
 
     }
@@ -105,6 +124,9 @@ public class ChatActivity extends AppCompatActivity {
             binding.chatRecyclerView.setVisibility(View.VISIBLE);
         }
         binding.chatProgressBar.setVisibility(View.GONE);
+         if(conversationId==null){
+             checkConversion();
+         }
     });
 
     private Bitmap getBitmapFromString(String encoded) {
@@ -126,4 +148,44 @@ public class ChatActivity extends AppCompatActivity {
     private String getReadableDateTime(Date date) {
         return new SimpleDateFormat("MMMM dd,yyyy-hh:mm a", Locale.getDefault()).format(date);
     }
+
+    private void addConversion(HashMap<String ,Object> conversion){
+        database.collection(KEYS.KEY_COLLECTION_CONVERSATIONS)
+                .add(conversion)
+                .addOnSuccessListener(documentReference -> conversationId=documentReference.getId());
+    }
+
+    private void updateConversion(String message){
+        DocumentReference documentReference=database.collection(KEYS.KEY_COLLECTION_CONVERSATIONS).document(conversationId);
+        documentReference.update(
+                KEYS.KEY_LAST_MESSAGE,message,
+                KEYS.KEY_TIMESTAMP,new Date()
+        );
+    }
+
+    private void checkConversion(){
+        if(!chatMessages.isEmpty()) {
+            checkForConversionRemotely(
+                    sharedPref.getString(KEYS.KEY_USER_ID),
+                    receivedUser.getId()
+            );
+            checkForConversionRemotely(
+                    receivedUser.getId(),
+                    sharedPref.getString(KEYS.KEY_USER_ID)
+            );
+        }
+    }
+
+    private void checkForConversionRemotely(String senderId,String receiverId){
+        database.collection(KEYS.KEY_COLLECTION_CONVERSATIONS)
+                .whereEqualTo(KEYS.KEY_SENDER_ID,senderId)
+                .whereEqualTo(KEYS.KEY_RECEIVER_ID,receiverId)
+                .get().addOnCompleteListener(conversationOnCompleteListener);
+    }
+    private final OnCompleteListener<QuerySnapshot> conversationOnCompleteListener= task->{
+        if(task.isSuccessful()&&task.getResult()!=null && !task.getResult().getDocuments().isEmpty()){
+            DocumentSnapshot documentSnapshot=task.getResult().getDocuments().get(0);
+            conversationId=documentSnapshot.getId();
+        }
+    };
 }
