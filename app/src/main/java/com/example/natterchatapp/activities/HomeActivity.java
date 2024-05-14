@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 
-public class HomeActivity extends AppCompatActivity implements ConversionListener {
+public class HomeActivity extends BaseActivity implements ConversionListener {
 
     private Preference pref;
     private ShowToast toast;

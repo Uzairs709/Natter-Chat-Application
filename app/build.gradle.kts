@@ -60,5 +60,8 @@ dependencies {
     implementation(libs.firebase.firestore.v2302)
     implementation(libs.roundedimageview)
 
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.retrofit2.converter.scalars)
+
 
 }
