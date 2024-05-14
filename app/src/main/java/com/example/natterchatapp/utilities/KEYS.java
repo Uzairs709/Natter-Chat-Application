@@ -1,5 +1,7 @@
 package com.example.natterchatapp.utilities;
 
+import java.util.HashMap;
+
 public class KEYS {
     public static final String KEY_COLLECTION_USER = "users";
     public static final String KEY_USER_NAME = "name";
@@ -29,6 +31,21 @@ public class KEYS {
 
     public static final String REMOTE_MSG_AUTHORIZATION="authorization";
     public static final String REMOTE_MSG_CONTENT_TYPE="Content-Type";
+    public static final String REMOTE_MSG_DATA="data";
+    public static final String REMOTE_MSG_REGISTRATION_ID="registration_ids";
 
-
+    public static HashMap<String,String> remoteMsgHeaders=null;
+    public static HashMap<String,String>getRemoteHeaders(){
+        if(remoteMsgHeaders==null){
+            remoteMsgHeaders=new HashMap<>();
+            remoteMsgHeaders.put(REMOTE_MSG_AUTHORIZATION,
+                    "key=AAAAIAeuRiM:APA91bH9liwEfLJ59yK7HyQzXS-wxeJivY6-g9z6VYmaxOoBd3QFw3OqXOqypYspWGF6aJ--HxR2PzZKmPqCZFydDwYkcKVw7xcTM0js72mvbOrMhjFCD2D5rR6TdcT4u_Hpn-JnfiPD"
+            );
+              remoteMsgHeaders.put(
+                      REMOTE_MSG_CONTENT_TYPE,
+                      "application/json"
+              );
+        }
+        return remoteMsgHeaders;
+    }
 }

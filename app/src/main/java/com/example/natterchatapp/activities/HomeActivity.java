@@ -140,6 +140,7 @@ public class HomeActivity extends BaseActivity implements ConversionListener {
     };
 
     private void updateToken(String token) {
+        pref.putString(KEYS.KEY_FCM_TOKEN,token);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference dr = db.collection(KEYS.KEY_COLLECTION_USER)
                 .document(
