@@ -39,7 +39,7 @@ public class KEYS {
         if(remoteMsgHeaders==null){
             remoteMsgHeaders=new HashMap<>();
             remoteMsgHeaders.put(REMOTE_MSG_AUTHORIZATION,
-                    "key=AAAAIAeuRiM:APA91bH9liwEfLJ59yK7HyQzXS-wxeJivY6-g9z6VYmaxOoBd3QFw3OqXOqypYspWGF6aJ--HxR2PzZKmPqCZFydDwYkcKVw7xcTM0js72mvbOrMhjFCD2D5rR6TdcT4u_Hpn-JnfiPD"
+                    "key=your authorization key here"
             );
               remoteMsgHeaders.put(
                       REMOTE_MSG_CONTENT_TYPE,
